@@ -28,7 +28,8 @@ public class SourceCloudConnector {
             headers.setContentType(MediaType.APPLICATION_JSON);
             headers.setBearerAuth(sourceTempoToken);
             HttpEntity httpEntity = new HttpEntity<>(null, headers);
-            ResponseEntity<WorklogListDto> usage = restTemplate.exchange(tempoCloudUrl + "/worklogs/project/CUST360?offset=0&limit=1000",
+            ResponseEntity<WorklogListDto> usage = restTemplate.exchange(tempoCloudUrl +
+                            "/worklogs/project/CUST360?offset=0&limit=1000",
                     HttpMethod.GET, httpEntity, WorklogListDto.class);
             return usage.getBody();
         } catch (HttpStatusCodeException sce) {
@@ -43,7 +44,8 @@ public class SourceCloudConnector {
             headers.setContentType(MediaType.APPLICATION_JSON);
             headers.setBearerAuth(sourceTempoToken);
             HttpEntity httpEntity = new HttpEntity(null, headers);
-            ResponseEntity<WorklogListDto> usage = restTemplate.exchange(nextSourceWorklogUrl, HttpMethod.GET, httpEntity, WorklogListDto.class);
+            ResponseEntity<WorklogListDto> usage = restTemplate.exchange(nextSourceWorklogUrl,
+                    HttpMethod.GET, httpEntity, WorklogListDto.class);
             return usage.getBody();
         } catch (HttpStatusCodeException sce) {
             log.error("Status Code exception {}", sce);
