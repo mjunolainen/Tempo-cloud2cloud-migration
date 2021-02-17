@@ -11,14 +11,10 @@ public class Cloud2CloudController {
     private TempoWorklogService tempoWorklogService;
 
     @GetMapping("migrateWorklogs")
-    public String migrateWorklogs() {
-        return tempoWorklogService.migrateWorklogs();
-    }
+    public String migrateWorklogs() { return tempoWorklogService.migrateWorklogs(); }
 
     @GetMapping("deleteDestinationWorklogs")
     public String deleteDestinationWorklogs() {
         return tempoWorklogService.deleteDestinationWorklogs();
     }
-
-
 }

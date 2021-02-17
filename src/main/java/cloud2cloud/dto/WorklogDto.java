@@ -8,10 +8,8 @@ public class WorklogDto {
     String self;
     Integer tempoWorklogId;
     Integer jiraWorklogId;
-
     @JsonProperty("issue")
     WorklogIssueDto worklogIssueDto;
-
     Integer timeSpentSeconds;
     Integer billableSeconds;
     String startDate;
@@ -19,10 +17,8 @@ public class WorklogDto {
     String description;
     String createdAt;
     String updatedAt;
-
     @JsonProperty("author")
     WorklogAuthorDto worklogAuthorDto;
-
     @JsonProperty("attributes")
     WorklogAttributesDto worklogAttributesDto;
 }

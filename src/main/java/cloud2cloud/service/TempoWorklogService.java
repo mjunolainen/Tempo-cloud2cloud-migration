@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalTime;
 
-
 @Slf4j
 @Service
 public class TempoWorklogService {
@@ -25,15 +24,10 @@ public class TempoWorklogService {
 
     public String migrateWorklogs() {
         LocalTime timeStart = LocalTime.now();
-        Integer worklogCountFromCloud = 0;
 
         WorklogListDto sourceWorklogList = sourceCloudConnector.getSourceWorklogs();
-        log.info("Self: {}", sourceWorklogList.getSelf());
-        log.info("Next: {}", sourceWorklogList.getWorklogsMetaDataDto().getNext());
 
         while (sourceWorklogList.getWorklogsMetaDataDto().getNext() != null) {
-            worklogCountFromCloud = worklogCountFromCloud + sourceWorklogList.getWorklogsMetaDataDto().getCount();
-            log.info("Worklogs from cloud: {}", worklogCountFromCloud);
 
             for (WorklogDto sourceWorklog : sourceWorklogList.getResults()) {
 
@@ -52,9 +46,6 @@ public class TempoWorklogService {
             sourceWorklogList = sourceCloudConnector.getNextSourceWorklogs(sourceWorklogList.getWorklogsMetaDataDto().getNext());
             log.info("Next: {}", sourceWorklogList.getWorklogsMetaDataDto().getNext());
         }
-
-        worklogCountFromCloud = worklogCountFromCloud + sourceWorklogList.getWorklogsMetaDataDto().getCount();
-        log.info("Worklogs from cloud: {}", worklogCountFromCloud);
 
         LocalTime timeEnd = LocalTime.now();
         log.info("Start time: {}", timeStart);

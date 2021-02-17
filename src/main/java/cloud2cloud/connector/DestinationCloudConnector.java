@@ -1,7 +1,6 @@
 package cloud2cloud.connector;
 
 import cloud2cloud.dto.DestinationWorklogDto;
-import cloud2cloud.dto.WorklogDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,16 +27,16 @@ public class DestinationCloudConnector {
             restTemplate.exchange(tempoCloudUrl + "/worklogs", HttpMethod.POST,
                     getEntityInsertWorklogs(destinationWorklog), void.class);
             return true;
-    } catch (HttpStatusCodeException sce) {
-        if (sce.getStatusCode() == HttpStatus.FORBIDDEN) {
+        } catch (HttpStatusCodeException sce) {
+            if (sce.getStatusCode() == HttpStatus.FORBIDDEN) {
+            }
+            if (sce.getStatusCode() == HttpStatus.BAD_REQUEST) {
+            }
+            if (sce.getStatusCode() == HttpStatus.INTERNAL_SERVER_ERROR) {
+            }
+            return false;
         }
-        if (sce.getStatusCode() == HttpStatus.BAD_REQUEST) {
-        }
-        if (sce.getStatusCode() == HttpStatus.INTERNAL_SERVER_ERROR) {
-        }
-        return false;
     }
-}
 
     private HttpEntity getEntityInsertWorklogs(DestinationWorklogDto worklog) {
         HttpHeaders headers = getHeaders();
