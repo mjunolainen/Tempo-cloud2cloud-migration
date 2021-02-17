@@ -27,6 +27,12 @@ public class TempoWorklogService {
 
             for (WorklogDto destinationWorklog : destinationWorklogList.getResults()) {
                 destinationCloudConnector.deleteDestinationWorklog(destinationWorklog.getTempoWorklogId());
+                try {
+                    Thread.sleep(30);
+                } catch (InterruptedException e) {
+                    log.error("Async error while deleting worklogs");
+                    e.printStackTrace();
+                }
             }
             destinationWorklogList = destinationCloudConnector.getNextDestinationWorklogs
                     (destinationWorklogList.getWorklogsMetaDataDto().getNext());
@@ -57,11 +63,15 @@ public class TempoWorklogService {
                 destinationWorklog.setAuthorAccountId(sourceWorklog.getWorklogAuthorDto().getAccountId());
 
                 destinationCloudConnector.insertDestinationWorklog(destinationWorklog);
+                try {
+                    Thread.sleep(30);
+                } catch (InterruptedException e) {
+                    log.error("Async error while migrating worklogs");
+                    e.printStackTrace();
+                }
             }
-            log.info(sourceWorklogList.getWorklogsMetaDataDto().getNext());
             sourceWorklogList = sourceCloudConnector.getNextSourceWorklogs
                     (sourceWorklogList.getWorklogsMetaDataDto().getNext());
-            log.info("Next: {}", sourceWorklogList.getWorklogsMetaDataDto().getNext());
         }
 
         LocalTime timeEnd = LocalTime.now();
