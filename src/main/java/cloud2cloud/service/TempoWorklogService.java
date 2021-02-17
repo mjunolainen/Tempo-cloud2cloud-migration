@@ -19,7 +19,23 @@ public class TempoWorklogService {
 
 
     public String deleteDestinationWorklogs() {
-        return null;
+        LocalTime timeStart = LocalTime.now();
+
+        WorklogListDto destinationWorklogList = destinationCloudConnector.getDestinationWorklogs();
+
+        while (destinationWorklogList.getWorklogsMetaDataDto().getNext() != null) {
+
+            for (WorklogDto destinationWorklog : destinationWorklogList.getResults()) {
+                destinationCloudConnector.deleteDestinationWorklog(destinationWorklog.getTempoWorklogId());
+            }
+            destinationWorklogList = destinationCloudConnector.getNextDestinationWorklogs
+                    (destinationWorklogList.getWorklogsMetaDataDto().getNext());
+        }
+
+        LocalTime timeEnd = LocalTime.now();
+        log.info("Start time: {}", timeStart);
+        log.info("End time: {}", timeEnd);
+        return "Worklogs deleted";
     }
 
     public String migrateWorklogs() {
@@ -43,7 +59,8 @@ public class TempoWorklogService {
                 destinationCloudConnector.insertDestinationWorklog(destinationWorklog);
             }
             log.info(sourceWorklogList.getWorklogsMetaDataDto().getNext());
-            sourceWorklogList = sourceCloudConnector.getNextSourceWorklogs(sourceWorklogList.getWorklogsMetaDataDto().getNext());
+            sourceWorklogList = sourceCloudConnector.getNextSourceWorklogs
+                    (sourceWorklogList.getWorklogsMetaDataDto().getNext());
             log.info("Next: {}", sourceWorklogList.getWorklogsMetaDataDto().getNext());
         }
 
