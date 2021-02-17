@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
@@ -23,7 +24,7 @@ public class DestinationCloudConnector {
     @Value("${destination.tempo.token}")
     private String destinationTempoToken;
 
-
+    @Async
     public Boolean insertDestinationWorklog(DestinationWorklogDto destinationWorklog) {
         try {
             restTemplate.exchange(tempoCloudUrl + "/worklogs", HttpMethod.POST,
@@ -46,7 +47,8 @@ public class DestinationCloudConnector {
             headers.setContentType(MediaType.APPLICATION_JSON);
             headers.setBearerAuth(destinationTempoToken);
             HttpEntity httpEntity = new HttpEntity<>(null, headers);
-            ResponseEntity<WorklogListDto> usage = restTemplate.exchange(tempoCloudUrl + "/worklogs/project/CUST360?offset=0&limit=1000",
+            ResponseEntity<WorklogListDto> usage = restTemplate.exchange(tempoCloudUrl +
+                            "/worklogs/project/CUST360?offset=0&limit=1000",
                     HttpMethod.GET, httpEntity, WorklogListDto.class);
             return usage.getBody();
         } catch (HttpStatusCodeException sce) {
@@ -55,6 +57,7 @@ public class DestinationCloudConnector {
         }
     }
 
+    @Async
     public void deleteDestinationWorklog(Integer tempoWorklogId) {
         try {
             restTemplate.exchange(tempoCloudUrl + "/worklogs/{tempoWorklogId}", HttpMethod.DELETE,
