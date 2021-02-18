@@ -23,7 +23,8 @@ public class TempoWorklogService {
 
         WorklogListDto destinationWorklogList = destinationCloudConnector.getDestinationWorklogs();
 
-        //while (destinationWorklogList.getWorklogsMetaDataDto().getNext() != null) {
+        while (destinationWorklogList.getWorklogsMetaDataDto().getNext() != null ||
+                destinationWorklogList.getWorklogsMetaDataDto().getCount() > 0) {
 
             for (WorklogDto destinationWorklog : destinationWorklogList.getResults()) {
                 destinationCloudConnector.deleteDestinationWorklog(destinationWorklog.getTempoWorklogId());
@@ -34,9 +35,9 @@ public class TempoWorklogService {
                     e.printStackTrace();
                 }
             }
-            //destinationWorklogList = destinationCloudConnector.getNextDestinationWorklogs
-              //      (destinationWorklogList.getWorklogsMetaDataDto().getNext());
-
+            destinationWorklogList = destinationCloudConnector.getNextDestinationWorklogs
+                    (destinationWorklogList.getWorklogsMetaDataDto().getNext());
+        }
 
         LocalTime timeEnd = LocalTime.now();
         log.info("Start time: {}", timeStart);
