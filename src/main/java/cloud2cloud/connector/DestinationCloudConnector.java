@@ -24,6 +24,9 @@ public class DestinationCloudConnector {
     @Value("${destination.tempo.token}")
     private String destinationTempoToken;
 
+    @Value("${destination.tempo.project.key}")
+    private String destinationTempoProjectKey;
+
     @Async
     public Boolean insertDestinationWorklog(DestinationWorklogDto destinationWorklog) {
         try {
@@ -48,7 +51,7 @@ public class DestinationCloudConnector {
             headers.setBearerAuth(destinationTempoToken);
             HttpEntity httpEntity = new HttpEntity<>(null, headers);
             ResponseEntity<WorklogListDto> usage = restTemplate.exchange(tempoCloudUrl +
-                            "/worklogs/project/CUST360?offset=0&limit=1000",
+                            "/worklogs/project/" + destinationTempoProjectKey + "?offset=0&limit=1000",
                     HttpMethod.GET, httpEntity, WorklogListDto.class);
             return usage.getBody();
         } catch (HttpStatusCodeException sce) {

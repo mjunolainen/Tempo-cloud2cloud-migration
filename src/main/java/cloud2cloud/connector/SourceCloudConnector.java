@@ -22,6 +22,9 @@ public class SourceCloudConnector {
     @Value("${source.tempo.token}")
     private String sourceTempoToken;
 
+    @Value("${source.tempo.project.key}")
+    private String sourceTempoProjectKey;
+
     public WorklogListDto getSourceWorklogs() {
         try {
             HttpHeaders headers = new HttpHeaders();
@@ -29,7 +32,7 @@ public class SourceCloudConnector {
             headers.setBearerAuth(sourceTempoToken);
             HttpEntity httpEntity = new HttpEntity<>(null, headers);
             ResponseEntity<WorklogListDto> usage = restTemplate.exchange(tempoCloudUrl +
-                            "/worklogs/project/CUST360?offset=0&limit=1000",
+                            "/worklogs/project/" + sourceTempoProjectKey + "?offset=0&limit=1000",
                     HttpMethod.GET, httpEntity, WorklogListDto.class);
             return usage.getBody();
         } catch (HttpStatusCodeException sce) {
