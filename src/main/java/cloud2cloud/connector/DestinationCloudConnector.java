@@ -35,13 +35,14 @@ public class DestinationCloudConnector {
             return true;
         } catch (HttpStatusCodeException sce) {
             if (sce.getStatusCode() == HttpStatus.FORBIDDEN) {
-            log.info("403");
+            log.info("Error 403, Issue key: {}", destinationWorklog.getIssueKey());
             }
             if (sce.getStatusCode() == HttpStatus.BAD_REQUEST) {
-            log.info("400");
+            log.info("Error 400, Issue key: {}", destinationWorklog.getIssueKey());
+
             }
             if (sce.getStatusCode() == HttpStatus.INTERNAL_SERVER_ERROR) {
-                log.info("500");
+                log.info("Error 500, Issue key: {}", destinationWorklog.getIssueKey());
             }
             return false;
         }
@@ -70,13 +71,13 @@ public class DestinationCloudConnector {
                     getEntity(), void.class, tempoWorklogId);
         } catch (HttpStatusCodeException sce) {
             if (sce.getStatusCode() == HttpStatus.FORBIDDEN) {
-                log.info("403");
+                log.info("Error 403, Issue key: {}", tempoWorklogId);
             }
             if (sce.getStatusCode() == HttpStatus.BAD_REQUEST) {
-                log.info("400");
+                log.info("Error 400, Issue key: {}", tempoWorklogId);
             }
             if (sce.getStatusCode() == HttpStatus.INTERNAL_SERVER_ERROR) {
-                log.info("500");
+                log.info("Error 500, Issue key: {}", tempoWorklogId);
             }
         }
     }

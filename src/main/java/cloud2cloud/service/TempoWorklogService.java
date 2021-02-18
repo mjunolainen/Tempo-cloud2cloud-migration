@@ -20,37 +20,39 @@ public class TempoWorklogService {
 
     public String deleteDestinationWorklogs() {
         LocalTime timeStart = LocalTime.now();
+        log.info("Start time: {}", timeStart);
 
         WorklogListDto destinationWorklogList = destinationCloudConnector.getDestinationWorklogs();
 
-        while (destinationWorklogList.getWorklogsMetaDataDto().getNext() != null ||
-                destinationWorklogList.getWorklogsMetaDataDto().getCount() > 0) {
-
+        while (destinationWorklogList.getWorklogsMetaDataDto().getCount() > 0) {
             for (WorklogDto destinationWorklog : destinationWorklogList.getResults()) {
                 destinationCloudConnector.deleteDestinationWorklog(destinationWorklog.getTempoWorklogId());
                 try {
-                    Thread.sleep(30);
+                    Thread.sleep(400);
                 } catch (InterruptedException e) {
                     log.error("Async error while deleting worklogs");
                     e.printStackTrace();
                 }
             }
-            destinationWorklogList = destinationCloudConnector.getNextDestinationWorklogs
-                    (destinationWorklogList.getWorklogsMetaDataDto().getNext());
+            if (destinationWorklogList.getWorklogsMetaDataDto().getNext() != null) {
+                destinationWorklogList = destinationCloudConnector.getNextDestinationWorklogs
+                        (destinationWorklogList.getWorklogsMetaDataDto().getNext());
+            } else {
+                break;
+            }
         }
-
         LocalTime timeEnd = LocalTime.now();
-        log.info("Start time: {}", timeStart);
         log.info("End time: {}", timeEnd);
         return "Worklogs deleted";
     }
 
     public String migrateWorklogs() {
         LocalTime timeStart = LocalTime.now();
+        log.info("Start time: {}", timeStart);
 
         WorklogListDto sourceWorklogList = sourceCloudConnector.getSourceWorklogs();
 
-        while (sourceWorklogList.getWorklogsMetaDataDto().getNext() != null) {
+        while (sourceWorklogList.getWorklogsMetaDataDto().getCount() > 0) {
 
             for (WorklogDto sourceWorklog : sourceWorklogList.getResults()) {
 
@@ -65,18 +67,20 @@ public class TempoWorklogService {
 
                 destinationCloudConnector.insertDestinationWorklog(destinationWorklog);
                 try {
-                    Thread.sleep(30);
+                    Thread.sleep(400);
                 } catch (InterruptedException e) {
                     log.error("Async error while migrating worklogs");
                     e.printStackTrace();
                 }
             }
-            sourceWorklogList = sourceCloudConnector.getNextSourceWorklogs
-                    (sourceWorklogList.getWorklogsMetaDataDto().getNext());
+            if (sourceWorklogList.getWorklogsMetaDataDto().getNext() != null) {
+                sourceWorklogList = sourceCloudConnector.getNextSourceWorklogs
+                        (sourceWorklogList.getWorklogsMetaDataDto().getNext());
+            } else {
+                break;
+            }
         }
-
         LocalTime timeEnd = LocalTime.now();
-        log.info("Start time: {}", timeStart);
         log.info("End time: {}", timeEnd);
         return "Worklogs migrated";
     }
